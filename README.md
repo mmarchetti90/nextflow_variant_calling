@@ -67,7 +67,7 @@ The following subfolders will be present:
 ## Input
 
 The pipeline reads a tsv file which specifies batches of samples to be analyzed in parallel.\
-Specify the path to tsv batch file with the **--batch_file** option (see below).\
+Specify the path to tsv batch file with the **--data_manifest_path** option (see below).\
 The tsv file contains the following fields:
 
 **GenomeID**
