@@ -1,0 +1,2 @@
+SampleID	ShortReads_Mate1	ShortReads_Mate2	Reference
+TestGenome	/path/to/test_R1_001.fastq.gz	path/to/test_R2_001.fastq.gz	path/to/H37Rv.fa
