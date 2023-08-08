@@ -8,7 +8,7 @@ process ConvertVCF {
 
   input:
   each variant_caller
-  tuple val(sample_id), path(vcf), path(reference_fasta)
+  tuple val(sample_id), path(vcf), path(reference_fasta), path(low_coverage_mask), path(low_coverage_mask_index)
 
   output:
   tuple val(sample_id), path("${sample_id}_${variant_caller}.fa"), emit: fasta_files
@@ -23,18 +23,18 @@ process ConvertVCF {
   then 
   
     # Consensus with quality filters applied (exclude indels). Positions absent from VCF will be included as consensus
-    #bcftools consensus --include "(TYPE!='indel' && FORMAT/DP >= ${params.depth_threshold}) && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --fasta-ref ${reference_fasta} --missing 'N' --absent 'N' ${vcf} > ${sample_id}_${variant_caller}_no_indels.fa
+    #bcftools consensus --include "(TYPE!='indel') && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --mask ${low_coverage_mask} --fasta-ref ${reference_fasta} --missing 'N' --absent 'N' ${vcf} > ${sample_id}_${variant_caller}_no_indels.fa
 
     # Consensus with quality filters applied (with indels). Positions absent from VCF will be included as consensus
-    bcftools consensus --include "(FORMAT/DP >= ${params.depth_threshold}) && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --fasta-ref ${reference_fasta} --missing 'N' --absent 'N' ${vcf} > ${sample_id}_${variant_caller}.fa
+    bcftools consensus --include "(QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --mask ${low_coverage_mask} --fasta-ref ${reference_fasta} --missing 'N' --absent 'N' ${vcf} > ${sample_id}_${variant_caller}.fa
   
   else
   
     # Consensus with quality filters applied (exclude indels)
-    #bcftools consensus --include "(TYPE!='indel' && FORMAT/DP >= ${params.depth_threshold}) && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --fasta-ref ${reference_fasta} --missing 'N' ${vcf} > ${sample_id}_${variant_caller}_no_indels.fa
+    #bcftools consensus --include "(TYPE!='indel') && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --mask ${low_coverage_mask} --fasta-ref ${reference_fasta} --missing 'N' ${vcf} > ${sample_id}_${variant_caller}_no_indels.fa
 
     # Consensus with quality filters applied (with indels)
-    bcftools consensus --include "(FORMAT/DP >= ${params.depth_threshold}) && (QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --fasta-ref ${reference_fasta} --missing 'N' ${vcf} > ${sample_id}_${variant_caller}.fa
+    bcftools consensus --include "(QUAL >= ${params.qual_threshold} || RGQ >= ${params.qual_threshold})" --mask ${low_coverage_mask} --fasta-ref ${reference_fasta} --missing 'N' ${vcf} > ${sample_id}_${variant_caller}.fa
   
   fi
   """

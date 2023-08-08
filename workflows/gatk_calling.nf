@@ -8,6 +8,7 @@ workflow GATK {
 
   take:
   bam_files
+  low_coverage_mask
 	
   main:
   // GATK VARIANT CALLER ------------------ //
@@ -16,6 +17,12 @@ workflow GATK {
 
   // CONVERTING VCF TO FASTA -------------- //
 
-  ConvertVCF("gatk", VariantsGATK.out.gatk_vcf_filt)
+  // Join VariantsGATK.out.gatk_vcf_filt and low_coverage mask
+  VariantsGATK.out.gatk_vcf_filt
+  .join(low_coverage_mask, by: 0, remainder: false)
+  .set{vcf_to_fasta_input}
+
+  // Convert vcf to fasta
+  ConvertVCF("gatk", vcf_to_fasta_input)
 
 }
