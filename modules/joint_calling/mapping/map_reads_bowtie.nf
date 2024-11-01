@@ -11,7 +11,7 @@ process MapReads_Bowtie {
 
   input:
   each path(reference_fasta)
-  path(index)
+  each path(index)
   tuple val(sample_id), path(read1), path(read2)
 
   output:
@@ -22,7 +22,6 @@ process MapReads_Bowtie {
 
   """
   # Alignment with Bowtie2
-  # Map with BWA
   if [[ "${read2}" == "mock_trim.fastq" ]]
   then
 

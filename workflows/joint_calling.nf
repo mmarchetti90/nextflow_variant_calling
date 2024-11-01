@@ -1,23 +1,16 @@
-#!/usr/bin/env nextflow
-
-nextflow.enable.dsl=2
-
-/*
-Variant calling of short reads sequencing samples
-*/
 
 // ----------------Workflow---------------- //
 
 include { IndexFastaSamtools } from '../modules/joint_calling/indexing/index_fasta_samtools.nf'
-include { MakeGATKDict } from '../modules/joint_calling/indexing/make_gatk_dict.nf'
 include { TrimFastQ } from '../modules/common/trimming/trimgalore.nf'
+include { IndexFastaBwa } from '../modules/joint_calling/indexing/index_fasta_bwa.nf'
 include { MapReads_BWA } from '../modules/joint_calling/mapping/map_reads_bwa.nf'
+include { IndexFastaBowtie } from '../modules/joint_calling/indexing/index_fasta_bowtie.nf'
 include { MapReads_Bowtie } from '../modules/joint_calling/mapping/map_reads_bowtie.nf'
 include { IndexBam } from '../modules/common/indexing/index_bam.nf'
 include { GATK } from '../subworkflows/joint_calling/gatk_calling.nf'
-include { LOFREQ } from '../subworkflows/joint_calling/lofreq_calling.nf'
 
-workflow {
+workflow JOINTCALLING {
 
   // CREATING INPUT CHANNELS -------------- //
 
@@ -34,7 +27,7 @@ workflow {
   .set{reference_fasta}
 
   // Index fasta
-  IndexFasta(reference_fasta)
+  IndexFastaSamtools(reference_fasta)
 
   // TRIMGALORE --------------------------- //
 
@@ -64,7 +57,7 @@ workflow {
     IndexFastaBowtie(reference_fasta)
 
     // Map
-    MapReads_Bowtie(reference_fasta, IndexFastaBwa.out.bwa_index, TrimFastQ.out.trimmed_fastq_files)
+    MapReads_Bowtie(reference_fasta, IndexFastaBowtie.out.bowtie_index, TrimFastQ.out.trimmed_fastq_files)
 
     bam_files = MapReads_Bowtie.out.bam_files
 

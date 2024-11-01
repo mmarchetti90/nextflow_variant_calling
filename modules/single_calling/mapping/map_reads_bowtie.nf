@@ -20,7 +20,6 @@ process MapReads_Bowtie {
 
   """
   # Alignment with Bowtie2
-  # Map with BWA
   if [[ "${read2}" == "mock_trim.fastq" ]]
   then
 

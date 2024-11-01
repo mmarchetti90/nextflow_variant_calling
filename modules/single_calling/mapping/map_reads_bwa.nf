@@ -10,7 +10,7 @@ process MapReads_BWA {
   publishDir "${projectDir}/${sample_id}/${params.reports_out}/mapping", mode: "copy", pattern: "*_marked_dup_metrics.txt"
 
   input:
-  tuple val(sample_id), path(read1), path(read2), path(reference_fasta)
+  tuple val(sample_id), path(read1), path(read2), path(reference_fasta), path(index)
 
   output:
   tuple val(sample_id), path("${sample_id}_merged_mrkdup.bam"), emit: bam_files

@@ -1,7 +1,7 @@
 
 // ----------------Workflow---------------- //
 
-include { VariantsLoFreq } from '../../modules/var_calling/variants_lofreq.nf'
+include { VariantsLoFreq } from '../../modules/single_calling/var_calling/variants_lofreq.nf'
 
 workflow LOFREQ {
 

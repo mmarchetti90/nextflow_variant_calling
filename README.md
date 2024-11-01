@@ -2,35 +2,17 @@
 
 Containerized Nextflow pipeline for variant calling using GATK and LoFreq.
 
-## Processes description
+## Workflows
 
-**TrimFastQ**
+### Single calling
 
-  Trims reads and runs FastQC.
+Each sample is processed individually, using the reference specified in the manifest file.
+Use this option when processing samples of different origin (e.g. different bacterial species).
 
-**ConcatenateLongReads**
+### Joint calling
 
-  If multiple long reads files are present, they are first concatenated.
-
-**MapReads_BWA**
-
-  Maps reads with BWA, then marks duplicates.
-
-**MapReads_Bowtie**
-
-  Same as above, but using Bowtie2.
-
-**VariantsGATK**
-
-  Variant calling using GATK.
-
-**VariantsLoFreq**
-
-  Same as above, but using LoFreq.
-
-**ConvertVCF**
-
-  Convert single sample VCF to fasta.
+Samples' GVCF files are combined and genotyped together.
+Use this option for samples from the same species (e.g. family trios).
 
 ## Folder structure
 
@@ -44,6 +26,7 @@ The following subfolders will be present:
 │
 ├── <b>fasta</b>
 │   Assembled fasta files from the vcf variants.
+│   Only for single calling.
 │
 ├── <b>reports</b>
 │   Subfolder for various reports.
@@ -61,7 +44,7 @@ The following subfolders will be present:
 │   Stores the reads trimmed by TrimGalore.
 │
 └── <b>variants</b>
-    Stores the variants in vcf format.
+    Stores the variants in gvcf and vcf format.
 </pre>
 
 ## Input
@@ -86,6 +69,7 @@ The tsv file contains the following fields:
 **Reference**
 
     Absolute path to the reference to use for mapping and variant calling.
+    Only add this field for single calling.
 
 ## Usage
 
@@ -95,9 +79,17 @@ Run the pipeline from a Slurm script as:
 
 ## Options
 
+**-profile**
+
+    Use <single> for single calling, <joint> for joint calling.
+
 **--data_manifest_path**
 
     Path to the sample manifest in tsv format.
+
+**--reference_fasta**
+
+    Path to reference. Only specify for joint calling.
 
 **--depth_threshold**
 

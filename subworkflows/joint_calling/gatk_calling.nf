@@ -4,10 +4,10 @@
 include { MakeGATKDict } from '../../modules/joint_calling/indexing/make_gatk_dict.nf'
 include { HaplotypeCaller } from '../../modules/joint_calling/var_calling/haplotype_caller.nf'
 include { IndexVcfGATK as IndexSingle } from '../../modules/common/indexing/index_vcf_gatk.nf'
-include { CombineGVCFs } from '../../modules/joint_calling/var_calling/combine_gvcf.nf'
+include { CombineGVCFs } from '../../modules/joint_calling/var_calling/combine_gvcfs.nf'
 include { IndexVcfGATK as IndexCombined } from '../../modules/common/indexing/index_vcf_gatk.nf'
-include { GenotypeGVCF } from '../../modules/joint_calling/var_calling/variants_gatk.nf'
-include { FilterVCF } from 
+include { GenotypeGVCF } from '../../modules/joint_calling/var_calling/genotype_gvcf.nf'
+include { FilterVCF } from '../../modules/common/var_calling/filter_vcf.nf'
 
 workflow GATK {
 
@@ -34,9 +34,10 @@ workflow GATK {
   // Index GVCFs
   IndexSingle(HaplotypeCaller.out.gatk_gvcf)
 
-  // Prep input for CombineGVCFs
+  // Prep input for CombineGVCFs (sample IDs are discarded, only files are kept)
   HaplotypeCaller.out.gatk_gvcf
   .join(IndexSingle.out.vcf_index, by: 0, remainder: false)
+  .map{ g -> tuple(file(g[1]), file(g[2])) }
   .collect()
   .set{gvcf_files}
 

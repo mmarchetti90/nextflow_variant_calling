@@ -1,25 +1,18 @@
-#!/usr/bin/env nextflow
-
-nextflow.enable.dsl=2
-
-/*
-Variant calling of short reads sequencing samples
-*/
 
 // ----------------Workflow---------------- //
 
 include { IndexFastaSamtools } from '../modules/single_calling/indexing/index_fasta_samtools.nf'
 include { TrimFastQ } from '../modules/common/trimming/trimgalore.nf'
-include { MapReads_BWA } from '../modules/single_calling/mapping/map_reads_bwa.nf'
 include { IndexFastaBwa } from '../modules/single_calling/indexing/index_fasta_bwa.nf'
-include { MapReads_Bowtie } from '../modules/mapping/single_calling/map_reads_bowtie.nf'
+include { MapReads_BWA } from '../modules/single_calling/mapping/map_reads_bwa.nf'
 include { IndexFastaBowtie } from '../modules/single_calling/indexing/index_fasta_bowtie.nf'
+include { MapReads_Bowtie } from '../modules/single_calling/mapping/map_reads_bowtie.nf'
 include { IndexBam } from '../modules/common/indexing/index_bam.nf'
 include { MakeLowCoverageMask } from '../modules/single_calling/cov_mask/make_low_coverage_mask.nf'
 include { GATK } from '../subworkflows/single_calling/gatk_calling.nf'
 include { LOFREQ } from '../subworkflows/single_calling/lofreq_calling.nf'
 
-workflow {
+workflow SINGLECALLING {
 
   // CREATING CHANNELS FROM MANIFEST ------ //
 
@@ -78,7 +71,7 @@ workflow {
     // Generate input
     TrimFastQ.out.trimmed_fastq_files
     .join(reference_fasta, by: 0, remainder: false)
-    .join(IndexFastaBwa.out.bowtie_index, by: 0, remainder: false)
+    .join(IndexFastaBowtie.out.bowtie_index, by: 0, remainder: false)
     .set{mapping_inputs}
 
     // Map

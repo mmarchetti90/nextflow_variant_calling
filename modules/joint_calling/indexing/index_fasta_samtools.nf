@@ -8,7 +8,7 @@ process IndexFastaSamtools {
   path reference_fasta
 
   output:
-  path "*.fai" , emit: reference_fasta_index
+  path "*.fai", emit: reference_fasta_index
 
   """
   # Index reference fasta

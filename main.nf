@@ -25,7 +25,7 @@ workflow {
   } else {
 
     println "ERROR: Unrecognized profile!"
-    println "Please chose one of: standard, gene_lvl, transcript_lvl, cellranger, small_rna, mirna"
+    println "Please chose one of: single, joint"
 
   }
 
