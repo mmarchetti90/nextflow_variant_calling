@@ -1,4 +1,4 @@
-process MapReads_Bowtie {
+process MapReads_BWA {
 
   // Map reads and mark duplicates
   
@@ -7,40 +7,35 @@ process MapReads_Bowtie {
   publishDir "${projectDir}/${sample_id}/${params.bam_out}", mode: "copy", pattern: "*_merged_mrkdup.bam"
   publishDir "${projectDir}/${sample_id}/${params.reports_out}/mapping", mode: "copy", pattern: "*_mapping.log"
   publishDir "${projectDir}/${sample_id}/${params.reports_out}/mapping", mode: "copy", pattern: "*_coverage_stats.txt"
-  publishDir "${projectDir}/${sample_id}/${params.reports_out}/mapping", mode: "copy", pattern: "*_marked_dup_metrics.txt" 
+  publishDir "${projectDir}/${sample_id}/${params.reports_out}/mapping", mode: "copy", pattern: "*_marked_dup_metrics.txt"
 
   input:
-  tuple val(sample_id), path(read1), path(read2), path(reference_fasta)
+  each path(reference_fasta)
+  path(index)
+  tuple val(sample_id), path(read1), path(read2)
 
   output:
-  tuple val(sample_id), path("${sample_id}_merged_mrkdup.bam"), path(reference_fasta), emit: bam_files
+  tuple val(sample_id), path("${sample_id}_merged_mrkdup.bam"), emit: bam_files
   path "${sample_id}_mapping.log", emit: mapping_reports
   path "${sample_id}_coverage_stats.txt", emit: coverage_stats
   path "${sample_id}_marked_dup_metrics.txt", emit: dup_metrics
 
   """
-  # Generate Bowtie2 index
-  bowtie2-build ${reference_fasta} b2_index
-
-  # Alignment with Bowtie2
   # Map with BWA
-  if [[ "${read2}" == "mock.fastq" ]]
+  if [[ "${read2}" == "mock_trim.fastq" ]]
   then
 
-    bowtie2 \
-    --threads \$SLURM_CPUS_ON_NODE \
-    -x b2_index \
-    -U ${read1} \
-    -S temp.sam
+    bwa mem \
+    -t \$SLURM_CPUS_ON_NODE \
+    ${reference_fasta} \
+    ${read1} > temp.sam
 
   else
 
-    bowtie2 \
-    --threads \$SLURM_CPUS_ON_NODE \
-    -x b2_index \
-    -1 ${read1} \
-    -2 ${read2} \
-    -S temp.sam
+    bwa mem \
+    -t \$SLURM_CPUS_ON_NODE \
+    ${reference_fasta} \
+    ${read1} ${read2} > temp.sam
 
   fi
 

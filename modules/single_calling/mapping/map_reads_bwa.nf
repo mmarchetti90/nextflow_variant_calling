@@ -13,17 +13,14 @@ process MapReads_BWA {
   tuple val(sample_id), path(read1), path(read2), path(reference_fasta)
 
   output:
-  tuple val(sample_id), path("${sample_id}_merged_mrkdup.bam"), path(reference_fasta), emit: bam_files
+  tuple val(sample_id), path("${sample_id}_merged_mrkdup.bam"), emit: bam_files
   path "${sample_id}_mapping.log", emit: mapping_reports
   path "${sample_id}_coverage_stats.txt", emit: coverage_stats
   path "${sample_id}_marked_dup_metrics.txt", emit: dup_metrics
 
   """
-  # Generate BWA index
-  bwa index ${reference_fasta}
-
   # Map with BWA
-  if [[ "${read2}" == "mock.fastq" ]]
+  if [[ "${read2}" == "mock_trim.fastq" ]]
   then
 
     bwa mem \

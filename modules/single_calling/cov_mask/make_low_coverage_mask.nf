@@ -4,10 +4,10 @@ process MakeLowCoverageMask {
   
   label 'variantcalling'
 
-  publishDir "${projectDir}/results/${batch}/${sample_id}/vars", mode: "copy", pattern: "*.bed.gz"
+  publishDir "${projectDir}/${sample_id}/${params.variants_out}", mode: "copy", pattern: "*.bed.gz"
 
   input:
-  tuple val(sample_id), path(bam), path(reference_fasta)
+  tuple val(sample_id), path(bam)
 
   output:
   tuple val(sample_id), path("${sample_id}_low_coverage_mask.bed.gz"), path("${sample_id}_low_coverage_mask.bed.gz.tbi"), emit: low_coverage_mask

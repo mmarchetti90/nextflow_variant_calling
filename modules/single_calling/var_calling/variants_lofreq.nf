@@ -7,19 +7,13 @@ process VariantsLoFreq {
   publishDir "${projectDir}/${sample_id}/${params.variants_out}", mode: "copy", pattern: "*{_lofreq_unfilt,_lofreq_filt}.vcf.gz"
 
   input:
-  tuple val(sample_id), path(bam), path(reference_fasta)
+  tuple val(sample_id), path(bam), path(bam_index), path(reference_fasta), path(reference_index)
 
   output:
   tuple val(sample_id), path("${sample_id}_lofreq_unfilt.vcf.gz"), path(reference_fasta), emit: lofreq_vcf_unfilt
   tuple val(sample_id), path("${sample_id}_lofreq_filt.vcf.gz"), path(reference_fasta), emit: lofreq_vcf_filt
 
   """
-  # Index reference fasta
-  samtools faidx ${reference_fasta}
-
-  # Index bam
-  samtools index ${bam}
-
   # Call variants with LoFreq, no filter
   lofreq call-parallel \
   --call-indels \

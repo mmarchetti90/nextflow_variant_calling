@@ -14,7 +14,7 @@ process TrimFastQ {
   output:
   path "*_fastqc.{html,zip}", emit: fastqc_reports
   path "*_trimming_report.txt", emit: trimming_reports
-  tuple val("${sample_id}"), path("{${sample_id}_val_1.fq.gz,${sample_id}_trimmed.fq.gz}"), path("{${sample_id}_val_2.fq.gz,mock.fastq}"), optional: true, emit: trimmed_fastq_files
+  tuple val("${sample_id}"), path("{${sample_id}_val_1.fq.gz,${sample_id}_trimmed.fq.gz}"), path("{${sample_id}_val_2.fq.gz,mock_trim.fastq}"), optional: true, emit: trimmed_fastq_files
 
   """
   if [[ "${read2}" == "mock.fastq" ]]
@@ -30,7 +30,7 @@ process TrimFastQ {
     ${read1}
 
     # Adding mock read2 output
-    touch mock.fastq
+    touch mock_trim.fastq
 
   else
 

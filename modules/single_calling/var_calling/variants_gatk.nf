@@ -4,26 +4,16 @@ process VariantsGATK {
   
   label 'variantcalling'
 
-  publishDir "${projectDir}/${sample_id}/${params.variants_out}", mode: "copy", pattern: "*_{gatk.g,gatk_unfilt,gatk_filt}.vcf.gz"
+  publishDir "${projectDir}/${sample_id}/${params.variants_out}", mode: "copy", pattern: "*_{gatk.g,gatk_unfilt}.vcf.gz"
 
   input:
-  tuple val(sample_id), path(bam), path(reference_fasta)
+  tuple val(sample_id), path(bam), path(bam_index), path(reference_fasta), path(reference_index), path(gatk_dict)
 
   output:
-  tuple val(sample_id), path("${sample_id}_gatk.g.vcf.gz"), path(reference_fasta), emit: gatk_gvcf
-  tuple val(sample_id), path("${sample_id}_gatk_unfilt.vcf.gz"), path(reference_fasta), emit: gatk_vcf_unfilt
-  tuple val(sample_id), path("${sample_id}_gatk_filt.vcf.gz"), path(reference_fasta), emit: gatk_vcf_filt
+  tuple val(sample_id), path("${sample_id}_gatk.g.vcf.gz"), emit: gatk_gvcf
+  tuple val(sample_id), path("${sample_id}_gatk_unfilt.vcf.gz"), emit: gatk_vcf_unfilt
 
   """
-  # Index reference fasta
-  samtools faidx ${reference_fasta}
-
-  # Index bam
-  samtools index ${bam}
-
-  # Generate GATK dictionary
-  gatk CreateSequenceDictionary -R ${reference_fasta}
-
   if [ ${params.variants_only} == false ]
   then 
   
@@ -66,10 +56,6 @@ process VariantsGATK {
     --output ${sample_id}_gatk_unfilt.vcf.gz
   
   fi
-
-  # Use bcftools to filter - can only apply one expression at a time.
-  bcftools filter --soft-filter 'lowQual' --exclude '(QUAL < ${params.qual_threshold} && QUAL != ".") || RGQ < ${params.qual_threshold}' ${sample_id}_gatk_unfilt.vcf.gz | \
-  bcftools filter --soft-filter 'lowDepth' --exclude 'FORMAT/DP < ${params.depth_threshold}' -O z -o ${sample_id}_gatk_filt.vcf.gz
   """
 
 }
