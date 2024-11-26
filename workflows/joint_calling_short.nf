@@ -10,7 +10,7 @@ include { MapReads_Bowtie } from '../modules/joint_calling/mapping/map_reads_bow
 include { IndexBam } from '../modules/common/indexing/index_bam.nf'
 include { GATK } from '../subworkflows/joint_calling/gatk_calling.nf'
 
-workflow JOINTCALLING {
+workflow JOINTCALLING_SHORT {
 
   // CREATING INPUT CHANNELS -------------- //
 

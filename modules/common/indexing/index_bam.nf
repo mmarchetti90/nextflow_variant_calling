@@ -12,7 +12,10 @@ process IndexBam {
 
   """
   # Index bam
-  samtools index ${bam}
+  samtools index \
+  -b \
+  -@ \$SLURM_CPUS_ON_NODE \
+  ${bam}
   """
 
 }

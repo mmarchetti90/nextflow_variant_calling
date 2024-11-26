@@ -6,13 +6,15 @@ Containerized Nextflow pipeline for variant calling using GATK and LoFreq.
 
 ### Single calling
 
-Each sample is processed individually, using the reference specified in the manifest file.
-Use this option when processing samples of different origin (e.g. different bacterial species).
+Each sample is processed individually, using the reference specified in the manifest file.\
+Use this option when processing samples of different origin (e.g. different bacterial species).\
+Only supports short reads.
 
 ### Joint calling
 
-Samples' GVCF files are combined and genotyped together.
-Use this option for samples from the same species (e.g. family trios).
+Samples' GVCF files are combined and genotyped together.\
+Use this option for samples from the same species (e.g. family trios).\
+Supports short reads and ONT.
 
 ## Folder structure
 

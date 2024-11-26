@@ -12,7 +12,7 @@ include { MakeLowCoverageMask } from '../modules/single_calling/cov_mask/make_lo
 include { GATK } from '../subworkflows/single_calling/gatk_calling.nf'
 include { LOFREQ } from '../subworkflows/single_calling/lofreq_calling.nf'
 
-workflow SINGLECALLING {
+workflow SINGLECALLING_SHORT {
 
   // CREATING CHANNELS FROM MANIFEST ------ //
 
