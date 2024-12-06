@@ -18,7 +18,7 @@ process CombineGVCFs {
   """
   # Collect GVCFs
   gvcf_files=" "
-  for file in *_gatk.g.vcf.gz
+  for file in *.g.vcf.gz
   do
 
     gvcf_files="\${gvcf_files} --variant \${file}"
