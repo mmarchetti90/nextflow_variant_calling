@@ -22,10 +22,12 @@ process Clair3GVCF {
   then
 
     phasing="--no_phasing_for_fa"
+    haploid_precision="--haploid_precise"
 
   else
 
     phasing=""
+    haploid_precision=""
 
   fi
 
@@ -38,6 +40,7 @@ process Clair3GVCF {
   --qual=${params.qual_threshold} \
   --sample_name=${sample_id} \
   \$phasing \
+  \$haploid_precision \
   --platform="ont" \
   --model_path="/opt/models/${params.clair3_model}" \
   --output=\$(pwd)
