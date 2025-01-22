@@ -57,7 +57,7 @@ The tsv file contains the following fields:
 
 **GenomeID**
 
-  Name of the assembled genome, used to organize the outputs.
+    Name of the assembled genome, used to organize the outputs.
 
 **ShortReads_Mate1**
 
