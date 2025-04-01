@@ -19,7 +19,7 @@ workflow {
     SINGLECALLING_SHORT()
 
   }
-  else if (params.single_calling == false) {
+  else if (params.ont_calling == true) {
     
     JOINTCALLING_ONT()
 
@@ -31,7 +31,7 @@ workflow {
   } else {
 
     println "ERROR: Unrecognized profile!"
-    println "Please chose one of: single, joint"
+    println "Please chose one of: single_short, joint_short, joint_ont"
 
   }
 
